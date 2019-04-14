@@ -1,60 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useField } from './hooks'
 import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
+import { checkUser, login, logout } from './reducers/userReducer'
 
 const App = props => {
   const [username, resetUsername] = useField('text')
   const [password, resetPassword] = useField('password')
-  const [user, setUser] = useState(null)
 
   useEffect(() => {
     props.initializeBlogs()
   }, [])
 
   useEffect(() => {
-    const loggedUser = window.localStorage.getItem('loggedUser')
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    props.checkUser()
   }, [])
 
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username: username.value,
-        password: password.value
-      })
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      setUser(user)
-      blogService.setToken(user.token)
-    } catch (exception) {
-      props.setNotification('Wrong username or password', 3, 'error')
-    }
-
+    props.login(username.value, password.value)
     resetUsername()
     resetPassword()
   }
 
-  const handleLogout = () => {
-    window.localStorage.clear()
-    blogService.setToken(null)
-    setUser(null)
-  }
-
   const newBlogRef = React.createRef()
 
-  if (user === null) {
+  if (props.user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
@@ -78,8 +53,8 @@ const App = props => {
     <div>
       <h2>blogs</h2>
       <Notification />
-      <p>{user.name} logged in</p>
-      <button onClick={() => handleLogout()}>Log out</button>
+      <p>{props.user.name} logged in</p>
+      <button onClick={() => props.logout()}>Log out</button>
       <Togglable buttonLabel="New blog" ref={newBlogRef}>
         <NewBlog blogRef={newBlogRef}/>
       </Togglable>
@@ -87,7 +62,6 @@ const App = props => {
         <Blog
           key={blog.id}
           blog={blog}
-          user={user}
         />
       )}
     </div>
@@ -96,14 +70,16 @@ const App = props => {
 
 const mapStateToProps = state => {
   return {
-    notification: state.notification,
-    blogs: state.blogs
+    blogs: state.blogs,
+    user: state.user
   }
 }
 
 const mapDispatchToProps = {
-  setNotification,
-  initializeBlogs
+  initializeBlogs,
+  checkUser,
+  login,
+  logout
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

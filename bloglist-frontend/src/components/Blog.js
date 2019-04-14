@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, user, ...props }) => {
+const Blog = ({ blog, ...props }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,7 +15,7 @@ const Blog = ({ blog, user, ...props }) => {
   const [expanded, setExpanded] = useState(false)
 
   const showWhenExpanded = { display: expanded ? '' : 'none' }
-  const showIfCreator = { display: blog.user.username === user.username ? '' : 'none' }
+  const showIfCreator = { display: blog.user.username === props.user.username ? '' : 'none' }
 
   return (
     <div style={blogStyle} className="blog">
@@ -39,9 +39,15 @@ Blog.propTypes = {
   removeBlog: PropTypes.func.isRequired
 }
 
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
+
 const mapDistpatchToProps = {
   likeBlog,
   removeBlog
 }
 
-export default connect(null, mapDistpatchToProps)(Blog)
+export default connect(mapStateToProps, mapDistpatchToProps)(Blog)
