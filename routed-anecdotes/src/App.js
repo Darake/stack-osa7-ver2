@@ -4,6 +4,10 @@ import {
   Route, Link, Redirect, withRouter
 } from 'react-router-dom'
 
+const Notification = ({ message }) => (
+  message === null ? null : <div>{message}</div>
+)
+
 const Menu = () => {
   const padding = {
     paddingRight: 5
@@ -60,7 +64,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
+let CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -74,6 +78,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.notify(`A new notification ${content} created!`)
+    props.history.push('/')
   }
 
   return (
@@ -96,8 +102,9 @@ const CreateNew = (props) => {
       </form>
     </div>
   )
-
 }
+
+CreateNew = withRouter(CreateNew)
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -117,7 +124,7 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
@@ -138,12 +145,18 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const notify = message => {
+    setNotification(message)
+    setTimeout(() => setNotification(null), 10000)
+  }
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Router>
         <div>
           <Menu />
+          <Notification message={notification} />
           <Route exact path="/" render={() =>
             <AnecdoteList anecdotes={anecdotes} />
           } />
@@ -151,7 +164,7 @@ const App = () => {
             <Anecdote anecdote={anecdoteById(match.params.id)} />
           } />
           <Route exact path="/create" render={() =>
-            <CreateNew addNew={addNew} />
+            <CreateNew addNew={addNew} notify={notify}/>
           } />
           <Route exact path="/about" render={() =>
             <About />
