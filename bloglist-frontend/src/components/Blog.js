@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, likeBlog, removeBlog, user }) => {
+const Blog = ({ blog, user, ...props }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,17 +17,6 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
   const showWhenExpanded = { display: expanded ? '' : 'none' }
   const showIfCreator = { display: blog.user.username === user.username ? '' : 'none' }
 
-  const handleLike = () => {
-    const updatedBlog = {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-    likeBlog(blog.id, updatedBlog)
-  }
-
   return (
     <div style={blogStyle} className="blog">
       <div onClick={() => setExpanded(!expanded)} className="basicInformation">
@@ -34,9 +25,9 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
       <div style={showWhenExpanded} className="togglableContent">
         {blog.url} <br/>
         {blog.likes} likes
-        <button onClick={handleLike}>like</button> <br/>
+        <button onClick={() => props.likeBlog(blog)}>like</button> <br/>
         added by {blog.user.name} <br/>
-        <button style={showIfCreator} onClick={() => removeBlog(blog)}>Remove</button>
+        <button style={showIfCreator} onClick={() => props.removeBlog(blog)}>Remove</button>
       </div>
     </div>
   )}
@@ -48,4 +39,9 @@ Blog.propTypes = {
   removeBlog: PropTypes.func.isRequired
 }
 
-export default Blog
+const mapDistpatchToProps = {
+  likeBlog,
+  removeBlog
+}
+
+export default connect(null, mapDistpatchToProps)(Blog)

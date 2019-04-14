@@ -8,17 +8,15 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = props => {
-  const [blogs, setBlogs] = useState([])
   const [username, resetUsername] = useField('text')
   const [password, resetPassword] = useField('password')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
-    )
+    props.initializeBlogs()
   }, [])
 
   useEffect(() => {
@@ -56,20 +54,6 @@ const App = props => {
 
   const newBlogRef = React.createRef()
 
-  const likeBlog = async (id, blogObject) => {
-    const updatedBlog = await blogService.update(id, blogObject)
-    setBlogs(blogs
-      .map(blog => blog.id === id ? updatedBlog : blog)
-      .sort((a, b) => b.likes - a.likes))
-  }
-
-  const removeBlog = async blog => {
-    if (window.confirm(`Remove blog ${blog.name} by ${blog.author}`)) {
-      await blogService.remove(blog.id)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
-    }
-  }
-
   if (user === null) {
     return (
       <div>
@@ -97,14 +81,12 @@ const App = props => {
       <p>{user.name} logged in</p>
       <button onClick={() => handleLogout()}>Log out</button>
       <Togglable buttonLabel="New blog" ref={newBlogRef}>
-        <NewBlog blogs={blogs} setBlogs={setBlogs} blogRef={newBlogRef}/>
+        <NewBlog blogRef={newBlogRef}/>
       </Togglable>
-      {blogs.map(blog =>
+      {props.blogs.map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
-          likeBlog={likeBlog}
-          removeBlog={removeBlog}
           user={user}
         />
       )}
@@ -114,8 +96,14 @@ const App = props => {
 
 const mapStateToProps = state => {
   return {
-    notification: state.notification
+    notification: state.notification,
+    blogs: state.blogs
   }
 }
 
-export default connect(mapStateToProps, { setNotification })(App)
+const mapDispatchToProps = {
+  setNotification,
+  initializeBlogs
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

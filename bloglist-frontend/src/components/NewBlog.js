@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useField } from '../hooks'
-import blogService from '../services/blogs'
 import { setNotification } from '../reducers/notificationReducer'
+import { createBlog } from '../reducers/blogReducer'
 
-const NewBlog = ({ blogs, setBlogs, blogRef, ...props }) => {
+const NewBlog = ({ blogRef, ...props }) => {
   const [title, resetTitle] = useField('text')
   const [author, resetAuthor] = useField('text')
   const [url, resetUrl] = useField('text')
@@ -17,9 +17,7 @@ const NewBlog = ({ blogs, setBlogs, blogRef, ...props }) => {
       author: author.value,
       url: url.value
     }
-    const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(returnedBlog))
-
+    props.createBlog(blogObject)
     props.setNotification(`A new blog ${title.value} by ${author.value} added`, 3)
 
     resetTitle()
@@ -50,4 +48,15 @@ const NewBlog = ({ blogs, setBlogs, blogRef, ...props }) => {
   )
 }
 
-export default connect(null, { setNotification })(NewBlog)
+const mapStateToProps = state => {
+  return {
+    blogs: state.blogs
+  }
+}
+
+const mapDistpatchToProps = {
+  setNotification,
+  createBlog
+}
+
+export default connect(mapStateToProps, mapDistpatchToProps)(NewBlog)
