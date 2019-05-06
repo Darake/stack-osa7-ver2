@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { useField } from './hooks'
-import Blog from './components/Blog'
-import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
+import BlogView from './components/BlogView'
+import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import { checkUser, login, logout } from './reducers/userReducer'
 
 const App = props => {
@@ -14,6 +15,7 @@ const App = props => {
 
   useEffect(() => {
     props.initializeBlogs()
+    props.initializeUsers()
   }, [])
 
   useEffect(() => {
@@ -26,8 +28,6 @@ const App = props => {
     resetUsername()
     resetPassword()
   }
-
-  const newBlogRef = React.createRef()
 
   if (props.user === null) {
     return (
@@ -55,28 +55,25 @@ const App = props => {
       <Notification />
       <p>{props.user.name} logged in</p>
       <button onClick={() => props.logout()}>Log out</button>
-      <Togglable buttonLabel="New blog" ref={newBlogRef}>
-        <NewBlog blogRef={newBlogRef}/>
-      </Togglable>
-      {props.blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-        />
-      )}
+      <Router>
+        <div>
+          <Route exact path="/" render={() => <BlogView />} />
+          <Route path="/users" render={() => <Users />} />
+        </div>
+      </Router>
     </div>
   )
 }
 
 const mapStateToProps = state => {
   return {
-    blogs: state.blogs,
     user: state.user
   }
 }
 
 const mapDispatchToProps = {
   initializeBlogs,
+  initializeUsers,
   checkUser,
   login,
   logout
