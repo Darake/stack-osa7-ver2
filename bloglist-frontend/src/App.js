@@ -5,6 +5,7 @@ import { useField } from './hooks'
 import Notification from './components/Notification'
 import BlogView from './components/BlogView'
 import Users from './components/Users'
+import User from './components/User'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/usersReducer'
 import { checkUser, login, logout } from './reducers/userReducer'
@@ -28,6 +29,8 @@ const App = props => {
     resetUsername()
     resetPassword()
   }
+
+  const userById = id => props.users.find(user => user.id === id)
 
   if (props.user === null) {
     return (
@@ -58,7 +61,10 @@ const App = props => {
       <Router>
         <div>
           <Route exact path="/" render={() => <BlogView />} />
-          <Route path="/users" render={() => <Users />} />
+          <Route exact path="/users" render={() => <Users />} />
+          <Route exact path="/users/:id" render={({ match }) =>
+            <User user={userById(match.params.id)} />
+          } />
         </div>
       </Router>
     </div>
@@ -67,7 +73,8 @@ const App = props => {
 
 const mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    users: state.users
   }
 }
 
