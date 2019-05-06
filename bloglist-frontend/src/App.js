@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { useField } from './hooks'
+import Navigation from './components/Navigation'
 import Notification from './components/Notification'
 import BlogView from './components/BlogView'
 import Blog from './components/Blog'
@@ -56,11 +57,10 @@ const App = props => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
-      <p>{props.user.name} logged in</p>
-      <button onClick={() => props.logout()}>Log out</button>
       <Router>
+        <Navigation />
+        <Notification />
+        <h2>Blog app</h2>
         <div>
           <Route exact path="/" render={() => <BlogView />} />
           <Route exact path="/blogs/:id" render={({ match }) =>
