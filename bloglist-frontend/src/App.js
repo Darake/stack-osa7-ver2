@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { useField } from './hooks'
 import Notification from './components/Notification'
 import BlogView from './components/BlogView'
+import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
 import { initializeBlogs } from './reducers/blogReducer'
@@ -31,6 +32,7 @@ const App = props => {
   }
 
   const userById = id => props.users.find(user => user.id === id)
+  const blogById = id => props.blogs.find(blog => blog.id === id)
 
   if (props.user === null) {
     return (
@@ -61,6 +63,9 @@ const App = props => {
       <Router>
         <div>
           <Route exact path="/" render={() => <BlogView />} />
+          <Route exact path="/blogs/:id" render={({ match }) =>
+            <Blog blog={blogById(match.params.id)} />
+          } />
           <Route exact path="/users" render={() => <Users />} />
           <Route exact path="/users/:id" render={({ match }) =>
             <User user={userById(match.params.id)} />
@@ -74,7 +79,8 @@ const App = props => {
 const mapStateToProps = state => {
   return {
     user: state.user,
-    users: state.users
+    users: state.users,
+    blogs: state.blogs
   }
 }
 
