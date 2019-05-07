@@ -32,10 +32,10 @@ const NewBlog = ({ blogRef, ...props }) => {
       <h2>Create a new blog</h2>
       <Form onSubmit={handleCreate}>
         <Form.Group>
-          <Form.Control placeholder="Title" {...title} />
-          <Form.Control placeholder="Author" {...author} />
-          <Form.Control placeholder="URL" {...url} />
-          <Button size="sm" type="submit">Create</Button>
+          <Form.Control id="title" placeholder="Title" {...title} />
+          <Form.Control id="author"  placeholder="Author" {...author} />
+          <Form.Control id="url"  placeholder="URL" {...url} />
+          <Button id="createBlog" size="sm" type="submit">Create</Button>
         </Form.Group>
       </Form>
     </div>
