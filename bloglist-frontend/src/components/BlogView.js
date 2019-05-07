@@ -16,7 +16,7 @@ const BlogView = props => {
   }
 
   return (
-    <div>
+    <div id="blogView">
       <Togglable buttonLabel="New blog" ref={newBlogRef}>
         <NewBlog blogRef={newBlogRef}/>
       </Togglable>
