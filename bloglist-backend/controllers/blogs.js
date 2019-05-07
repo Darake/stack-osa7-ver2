@@ -76,4 +76,17 @@ router.delete('/:id', async (request, response) => {
   }
 })
 
+router.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body
+
+  if (!comment) {
+    return response.status(400).send({ error: 'comment missing' }).end()
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  blog.comments = blog.comments.concat(comment)
+  await blog.save()
+  response.json(blog.toJSON())
+})
+
 module.exports = router

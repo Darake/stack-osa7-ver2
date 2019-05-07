@@ -17,6 +17,13 @@ const Blog = ({ blog, ...props }) => {
       <button onClick={() => props.likeBlog(blog)}>like</button> <br/>
       added by {blog.user.name} <br/>
       <button style={showIfCreator} onClick={() => props.removeBlog(blog)}>Remove</button>
+
+      <h3>Comments</h3>
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={comment}>{comment}</li>
+        )}
+      </ul>
     </div>
   )
 }
