@@ -45,11 +45,11 @@ const App = props => {
           <Form.Group>
             <div>
               <Form.Label>Käyttäjätunnus:</Form.Label>
-              <Form.Control {...username} />
+              <Form.Control id='username' {...username} />
             </div>
             <div>
               <Form.Label>Salasana:</Form.Label>
-              <Form.Control {...password} />
+              <Form.Control id='password' {...password} />
             </div>
             <Button type="submit">Kirjaudu</Button>
           </Form.Group>
