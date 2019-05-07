@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Button, Form, InputGroup } from 'react-bootstrap'
 import { likeBlog, removeBlog, addComment } from '../reducers/blogReducer'
 import { useField } from '../hooks'
 
@@ -21,17 +22,29 @@ const Blog = ({ blog, ...props }) => {
       <h2>{blog.title} by {blog.author}</h2>
 
       <a href={blog.url}>{blog.url}</a> <br/>
-      {blog.likes} likes
-      <button onClick={() => props.likeBlog(blog)}>like</button> <br/>
+      {blog.likes} likes <br/>
       added by {blog.user.name} <br/>
-      <button style={showIfCreator} onClick={() => props.removeBlog(blog)}>Remove</button>
+      <Button
+        onClick={() => props.likeBlog(blog)}
+        size="sm"
+      >Like</Button>
+      <Button
+        style={showIfCreator}
+        onClick={() => props.removeBlog(blog)}
+        size="sm"
+        variant="secondary"
+      >Remove</Button>
 
       <h3>Comments</h3>
 
-      <form onSubmit={handleNewComment}>
-        <input {...comment} />
-        <button type="submit">Add comment</button>
-      </form>
+      <Form onSubmit={handleNewComment}>
+        <InputGroup>
+          <Form.Control {...comment} />
+          <InputGroup.Append>
+            <Button type="submit">Add comment</Button>
+          </InputGroup.Append>
+        </InputGroup>
+      </Form>
       <ul>
         {blog.comments.map(comment =>
           <li key={comment}>{comment}</li>

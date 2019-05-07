@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Form, Button } from 'react-bootstrap'
 import { useField } from '../hooks'
 import { setNotification } from '../reducers/notificationReducer'
 import { createBlog } from '../reducers/blogReducer'
@@ -29,21 +30,14 @@ const NewBlog = ({ blogRef, ...props }) => {
   return (
     <div>
       <h2>Create a new blog</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          Title:
-          <input {...title} />
-        </div>
-        <div>
-          Author:
-          <input {...author} />
-        </div>
-        <div>
-          URL:
-          <input {...url} />
-        </div>
-        <button type="submit">Create</button>
-      </form>
+      <Form onSubmit={handleCreate}>
+        <Form.Group>
+          <Form.Control placeholder="Title" {...title} />
+          <Form.Control placeholder="Author" {...author} />
+          <Form.Control placeholder="URL" {...url} />
+          <Button size="sm" type="submit">Create</Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

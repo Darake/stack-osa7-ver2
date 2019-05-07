@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 import { useField } from './hooks'
 import Navigation from './components/Navigation'
 import Notification from './components/Notification'
@@ -37,28 +38,30 @@ const App = props => {
 
   if (props.user === null) {
     return (
-      <div>
+      <div className="container">
         <h2>Log in to application</h2>
         <Notification />
-        <form onSubmit={handleLogin}>
-          <div>
-            Käyttäjätunnus:
-            <input {...username} />
-          </div>
-          <div>
-            Salasana:
-            <input {...password} />
-          </div>
-          <button type="submit">Kirjaudu</button>
-        </form>
+        <Form onSubmit={handleLogin}>
+          <Form.Group>
+            <div>
+              <Form.Label>Käyttäjätunnus:</Form.Label>
+              <Form.Control {...username} />
+            </div>
+            <div>
+              <Form.Label>Salasana:</Form.Label>
+              <Form.Control {...password} />
+            </div>
+            <Button type="submit">Kirjaudu</Button>
+          </Form.Group>
+        </Form>
       </div>
     )
   }
 
   return (
-    <div>
-      <Router>
-        <Navigation />
+    <Router>
+      <Navigation />
+      <div className="container">
         <Notification />
         <h2>Blog app</h2>
         <div>
@@ -71,8 +74,8 @@ const App = props => {
             <User user={userById(match.params.id)} />
           } />
         </div>
-      </Router>
-    </div>
+      </div>
+    </Router>
   )
 }
 
